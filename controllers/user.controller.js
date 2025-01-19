@@ -162,12 +162,12 @@ exports.deleteUser = async (req, res) => {
 };
 
 exports.refreshToken = async (req, res) => {
-  const refreshToken = req.body.refreshToken;
+  const { refreshToken } = req.body;
   if (!refreshToken) {
     return res.status(401).json({ message: "Unauthorized", success: false });
   }
   try {
-    const user = await Users.findOne({ where: { refreshToken } });
+    const user = await Users.findOne({ where: { refreshToken }, attributes: { exclude: ['password', 'loginAttempts', 'refreshToken', 'isVerified', 'isActive','accessToken'] } });
     if (!user) {
       return res
         .status(401)
@@ -175,7 +175,7 @@ exports.refreshToken = async (req, res) => {
     }
     const accessToken = generateAccessToken(user);
 
-    res.status(200).json({ accessToken, success: true, user: req.user });
+    res.status(200).json({ accessToken, success: true, user });
   } catch (error) {
     res.status(500).json({ error: error.message, success: false });
   }

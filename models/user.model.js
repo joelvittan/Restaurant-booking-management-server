@@ -13,7 +13,6 @@ const Users = sequelize.define(
       allowNull: false,
       
     },
-    accessToken: { type: DataTypes.STRING, allowNull: true },
     refreshToken: { type: DataTypes.STRING, allowNull: true },
     isVerified: {
       type: DataTypes.BOOLEAN,
