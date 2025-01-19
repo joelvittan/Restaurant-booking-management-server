@@ -1,37 +1,57 @@
 const { Tables } = require("../models");
-
-
-
+const { generateQRCode } = require("../utils/qrCodeGenerator");
+const {
+  tableValidator,
+  updateTableSchema,
+} = require("../validators/table.validators");
 
 // Create a new table
-exports.createTable = async (req, res) => {
+exports.createTable = async (req, res, next) => {
+  const { name, capacity,qrCode } = req.body;
   try {
-    const { name, capacity } = req.body;
-    const newTable = await Tables.create({ name, capacity });
+    const existingTable = await Tables.findOne({ where: { name } });
+    if (existingTable) {
+      return res
+        .status(400)
+        .json({ message: "Table with this name already exists" });
+    }
+    const newTable = await Tables.create({ name, capacity,qrCode });
+    // const qrCode = await generateQRCode(newTable.id, newTable.name, newTable.capacity);
+    newTable.qrCode = qrCode;
+    await newTable.save();
     res
       .status(201)
-      .json({ message: "Table created successfully", table: newTable });
+      .json({ message: "Table created successfully", table: newTable,success: true });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: error.message,success: false });
   }
 };
 
 // Update table status
-exports.updateTableStatus = async (req, res) => {
+exports.updateTable = async (req, res) => {
+  const { error } = tableValidator(req.body, updateTableSchema);
+  if (error) {
+    return res.status(400).json({ message: error.details });
+  }
   try {
     const { id } = req.params;
-    const { status } = req.body;
     const table = await Tables.findByPk(id);
     if (!table) {
       return res.status(404).json({ message: "Table not found" });
     }
-    table.status = status;
+    if (req.body.name) {
+      table.name = req.body.name;
+    }
+    if (req.body.capacity) {
+      table.capacity = req.body.capacity;
+    }
+    if (req.body.status) {
+      table.status = req.body.status;
+    }
     await table.save();
-    res
-      .status(200)
-      .json({ message: "Table status updated successfully", table });
+    res.status(200).json({ message: "Table updated successfully", table ,success: true});
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: error.message,success: false });
   }
 };
 
@@ -56,8 +76,8 @@ exports.deleteTable = async (req, res) => {
       return res.status(404).json({ message: "Table not found" });
     }
     await table.destroy();
-    res.status(200).json({ message: "Table deleted successfully" });
+    res.status(200).json({ message: "Table deleted successfully",success: true });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: error.message ,success: false});
   }
 };

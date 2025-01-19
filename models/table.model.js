@@ -12,6 +12,7 @@ const Tables = sequelize.define(
     name: {
       type: DataTypes.STRING,
       allowNull: false,
+      unique: true,
     },
     capacity: {
       type: DataTypes.INTEGER,
@@ -20,6 +21,10 @@ const Tables = sequelize.define(
     status: {
       type: DataTypes.ENUM("available", "reserved", "occupied"),
       defaultValue: "available",
+    },
+    qrCode: {
+      type: DataTypes.BLOB,
+      allowNull: true,
     },
   },
   {
