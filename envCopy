@@ -1,0 +1,16 @@
+# Basic environment variables
+DB_HOST=localhost
+DB_PORT=3306
+DB_USER=vittanjoel
+DB_PASSWORD=joe
+DB_NAME=restaurant_booking_management
+
+# Server configuration
+PORT=3000
+NODE_ENV=development
+
+
+# jwt
+JWT_SECRET=joee
+REFRESH_SECRET=joee
+
