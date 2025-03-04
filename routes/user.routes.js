@@ -9,7 +9,6 @@ const {
   updateUser,
 } = require("../controllers/user.controller");
 const verifyToken = require("../middlewares/auth.middleware");
-const { route } = require("./table.routes");
 
 express = require("express");
 
