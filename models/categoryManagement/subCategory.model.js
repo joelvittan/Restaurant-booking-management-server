@@ -22,11 +22,7 @@ const SubCategory = sequelize.define("subCategory", {
     },
     categoryId: {
         type: DataTypes.INTEGER,
-        references: {
-            model: Category,
-            key: 'id',
-        },
-        onDelete: 'CASCADE',
+       
         allowNull: false,
         foreignKey: true,
     },

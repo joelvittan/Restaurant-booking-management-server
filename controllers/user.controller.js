@@ -5,6 +5,7 @@ const {
 const { userValidator } = require("../validators/user.validators");
 const Users = require("../models/user.model");
 const { response } = require("express");
+const { Tables } = require("../models");
 bcrypt = require("bcrypt");
 
 exports.register = async (req, res) => {
@@ -40,6 +41,7 @@ exports.register = async (req, res) => {
 
 exports.login = async (req, res) => {
   const { email, password } = req.body;
+  const tableId = req.cookies?.tableId;
 
   try {
     const user = await Users.findOne({ where: { email } });
@@ -59,18 +61,20 @@ exports.login = async (req, res) => {
       return res.status(400).json({ message: "Invalid email or password" });
     }
 
-    const accessToken = generateAccessToken(user);
-    const refreshToken = generateRefreshToken(user);
+    const accessToken = generateAccessToken(user, tableId);
+    const refreshToken = generateRefreshToken(user, tableId);
 
     user.refreshToken = refreshToken;
     user.loginAttempts = 0;
-    await user.save();
+    await user.save()
+
 
     res.status(200).json({
       accessToken,
       refreshToken,
       message: "Login successful",
       success: true,
+      tableId,
       user,
     });
   } catch (error) {
@@ -163,6 +167,8 @@ exports.deleteUser = async (req, res) => {
 
 exports.refreshToken = async (req, res) => {
   const { refreshToken } = req.body;
+  const tableId = req.cookies?.tableId;
+
   if (!refreshToken) {
     return res.status(401).json({ message: "Unauthorized", success: false });
   }
@@ -173,7 +179,7 @@ exports.refreshToken = async (req, res) => {
         .status(401)
         .json({ message: "Invalid refresh token", success: false });
     }
-    const accessToken = generateAccessToken(user);
+    const accessToken = generateAccessToken(user, tableId);
 
     res.status(200).json({ accessToken, success: true, user });
   } catch (error) {
@@ -188,3 +194,4 @@ exports.verifyLogin = async (req, res) => {
     .status(200)
     .json({ message: "Token verified successfully", user, success: true });
 };
+

@@ -14,6 +14,7 @@ const Booking = sequelize.define('Booking', {
   tableId: {
     type: DataTypes.INTEGER,
     allowNull: false,
+    
   },
   date: {
     type: DataTypes.DATE,
@@ -28,7 +29,7 @@ const Booking = sequelize.define('Booking', {
     allowNull: false,
   },
   status: {
-    type: DataTypes.ENUM('pending', 'confirmed', 'cancelled'),
+    type: DataTypes.ENUM('pending', 'confirmed', 'cancelled', 'checkedout'),
     defaultValue: 'pending',
   },
 });

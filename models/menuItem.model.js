@@ -18,21 +18,21 @@ const MenuItem = sequelize.define(
       type: DataTypes.STRING,
       allowNull: true,
     },
+    quantity: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
     price: {
       type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
     },
     images: {
-        type: DataTypes.STRING,
-        allowNull: true,
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     subCategoryId: {
-        type: DataTypes.INTEGER,
-        references: {
-            model: SubCategory,
-            key: 'id',
-        },
-        allowNull: false,
+      type: DataTypes.INTEGER,
+      allowNull: false,
     },
   },
   {

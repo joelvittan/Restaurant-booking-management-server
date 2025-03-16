@@ -28,3 +28,4 @@ router.get("/users",verifyToken, getAllUsers);
 router.get("/users/:id",verifyToken, getAllUsers);
 
 module.exports = router;
+

@@ -12,7 +12,6 @@ const Tables = sequelize.define(
     name: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
     },
     capacity: {
       type: DataTypes.INTEGER,
@@ -26,6 +25,7 @@ const Tables = sequelize.define(
       type: DataTypes.BLOB,
       allowNull: true,
     },
+  
   },
   {
     timestamps: false,

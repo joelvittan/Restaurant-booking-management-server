@@ -1,6 +1,5 @@
 const swaggerJsDoc = require('swagger-jsdoc');
 const { port } = require('./env');
-const { routes } = require('../app');
 
 const swaggerOptions = {
   definition: {
@@ -17,7 +16,7 @@ const swaggerOptions = {
       },
     ],
   },
-  apis:["./routes/*.js"],
+  apis: ['./routes/*.js'],
 };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);

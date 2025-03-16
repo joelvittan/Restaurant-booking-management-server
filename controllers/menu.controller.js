@@ -1,4 +1,5 @@
 const { MenuItem, Category, SubCategory } = require("../models");
+const { deleteImage } = require("../utils/imageDelete");
 
 exports.getAllMenuItems = async (req, res) => {
   try {
@@ -22,7 +23,7 @@ exports.getAllMenuItems = async (req, res) => {
 
 exports.createMenuItem = async (req, res) => {
   try {
-    const { name, description, price, subCategoryId } = req.body;
+    const { name, description, price, subCategoryId, quantity } = req.body;
     console.log(req.files);
     const imagePaths = req.files ? req.files.map((file) => file.path) : []; // Get uploaded file paths
     console.log(imagePaths);
@@ -30,6 +31,7 @@ exports.createMenuItem = async (req, res) => {
       name,
       description,
       price,
+      quantity,
       subCategoryId,
       images: JSON.stringify(imagePaths),
     });
@@ -47,13 +49,20 @@ exports.createMenuItem = async (req, res) => {
 exports.updateMenuItem = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, description, price, subCategoryId } = req.body;
+    const { name, description, price, subCategoryId, quantity } = req.body;
     const menuItem = await MenuItem.findByPk(id);
     if (!menuItem) {
       return res
         .status(404)
         .json({ message: "Menu item not found", success: false });
     }
+    const oldImages = menuItem.images ? JSON.parse(menuItem.images) : [];
+    if (req.files) {
+      oldImages.forEach((image) => {
+        deleteImage(image);
+      });
+    }
+
     const imagePaths = req.files
       ? req.files.map((file) => file.path)
       : menuItem.images
@@ -62,6 +71,7 @@ exports.updateMenuItem = async (req, res) => {
     menuItem.name = name || menuItem.name;
     menuItem.description = description || menuItem.description;
     menuItem.price = price || menuItem.price;
+    menuItem.quantity = quantity || menuItem.quantity;
     menuItem.subCategoryId = subCategoryId || menuItem.subCategoryId;
     menuItem.images = JSON.stringify(imagePaths);
     await menuItem.save();

@@ -11,18 +11,12 @@ const SuperSubCategory = sequelize.define("superSubCategory", {
     },
     categoryId: {
         type: DataTypes.INTEGER,
-        references: {
-            model: Category,
-            key: 'id',
-        },
+       
         allowNull: false,
     },
     subCategoryId: {
         type: DataTypes.INTEGER,
-        references: {
-            model: SubCategory,
-            key: 'id',
-        },
+      
         allowNull: false,
     },
     name: {
